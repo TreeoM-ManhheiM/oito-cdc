@@ -71,7 +71,7 @@ async def analyze_image_endpoint(image: UploadFile = File(...)):
                     ]
                 }
             ],
-            model="llama-3.2-11b-vision-preview", # Modelo focado em ler imagens
+            model="meta-llama/llama-4-scout-17b-16e-instruct", # Modelo focado em ler imagens
         )
         full_response = chat_completion.choices[0].message.content
 
