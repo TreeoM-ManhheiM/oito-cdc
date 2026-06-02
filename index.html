@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Auditor CDC - Técnico em Vendas</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f7f9fa;
+            color: #2c3e50;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        header {
+            background-color: #ffffff;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e1e8ed;
+            z-index: 10;
+        }
+        h1 { margin: 0; color: #1e7e34; font-size: 16px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .clear-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 11px;
+        }
+
+        #settings-bar {
+            background-color: #f1f5f8;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            border-bottom: 1px solid #d1d9e0;
+        }
+        .setting-item { display: flex; align-items: center; gap: 6px; }
+        select, input[type="range"] {
+            background: #ffffff; border: 1px solid #cbd5e0; border-radius: 4px; padding: 3px; color: #2c3e50;
+        }
+
+        #chat-container {
+            flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px;
+        }
+        
+        .msg-wrapper { display: flex; flex-direction: column; max-width: 95%; animation: fadeIn 0.2s ease; }
+        .msg-wrapper.user { align-self: flex-end; align-items: flex-end; }
+        .msg-wrapper.teacher { align-self: flex-start; align-items: flex-start; width: 100%; }
+
+        .msg { padding: 16px; border-radius: 6px; font-size: 14px; line-height: 1.6; word-wrap: break-word; }
+        .user .msg { background: #ebf5ff; color: #2b6cb0; border: 1px solid #bee3f8; font-weight: bold; }
+        
+        /* Layout de Prancheta / Relatório Técnico */
+        .teacher .msg { 
+            background: #ffffff; color: #1a202c; border: 1px solid #b2c2d1;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03); font-family: 'Times New Roman', Times, serif; font-size: 15px; white-space: pre-wrap;
+        }
+        
+        .label { font-size: 10px; color: #718096; margin-bottom: 3px; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; }
+
+        #controls {
+            padding: 12px 20px 25px 20px; background-color: #ffffff; border-top: 2px solid #e1e8ed;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+
+        .action-group { display: flex; align-items: center; justify-content: center; width: 100%; }
+
+        .upload-label {
+            width: 70px; height: 70px; border-radius: 50%; border: 2px solid #1e7e34;
+            background: #ffffff; color: #1e7e34; font-size: 28px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 10px rgba(30, 126, 52, 0.15);
+            transition: transform 0.1s;
+        }
+        .upload-label:active { transform: scale(0.95); }
+
+        #status { font-size: 13px; color: #4a5568; font-weight: bold; min-height: 18px; }
+        .speaking-indicator { display: none; color: #2f855a; font-size: 12px; font-weight: bold; animation: pulse 1.5s infinite; }
+        
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>LABORATÓRIO DE VENDAS: AUDITORIA CDC 📊</h1>
+        <button class="clear-btn" onclick="clearChat()">Limpar Prancheta</button>
+    </header>
+
+    <div id="settings-bar">
+        <div class="setting-item">
+            <label for="voiceSelect">Professor(a):</label>
+            <select id="voiceSelect"><option value="">Carregando vozes...</option></select>
+        </div>
+        <div class="setting-item">
+            <label for="rateControl">Velocidade:</label>
+            <input type="range" id="rateControl" min="0.8" max="1.6" value="1.0" step="0.1">
+        </div>
+    </div>
+
+    <div id="chat-container">
+        <div class="msg-wrapper teacher">
+            <span class="label">Manual do Aluno</span>
+            <div class="msg">Bem-vindos à atividade prática de conformidade legal! 
+
+Instruções:
+1. Encontre um panfleto, anúncio impresso, placa de loja ou publicação de rede social de vendas.
+2. Clique no botão inferior da Câmera/Clipe (📎).
+3. Tire a foto ou anexe o arquivo.
+
+O sistema processará a imagem em tempo real, calculando a porcentagem de conformidade com o CDC e gerando as recomendações de adequação comercial.</div>
+        </div>
+    </div>
+
+    <div id="controls">
+        <div id="status">Pronto para auditar peças publicitárias.</div>
+        <div class="action-group">
+            <label class="upload-label" for="imageInput">📷
+                <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="uploadImage(this)">
+            </label>
+        </div>
+        <div class="speaking-indicator" id="speakingIndicator">🔊 Avaliação do Professor em reprodução...</div>
+    </div>
+
+    <script>
+        let ptVoices = [];
+        const voiceSelect = document.getElementById('voiceSelect');
+        const rateControl = document.getElementById('rateControl');
+        const chatContainer = document.getElementById('chat-container');
+        const status = document.getElementById('status');
+        const controls = document.getElementById('controls');
+
+        function populateVoiceList() {
+            ptVoices = window.speechSynthesis.getVoices().filter(v => v.lang.includes('pt'));
+            voiceSelect.innerHTML = '';
+            ptVoices.forEach((voice, index) => {
+                const option = document.createElement('option');
+                option.textContent = voice.name; option.value = index;
+                if (voice.name.toUpperCase().includes('GOOGLE') || voice.name.toUpperCase().includes('FRANCISCA') || voice.name.toUpperCase().includes('LUCIA')) option.selected = true;
+                voiceSelect.appendChild(option);
+            });
+        }
+        populateVoiceList();
+        if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = populateVoiceList;
+
+        function clearChat() {
+            chatContainer.innerHTML = `<div class="msg-wrapper teacher"><span class="label">Prancheta</span><div class="msg">Aguardando o próximo envio de anúncio comercial...</div></div>`;
+            window.speechSynthesis.cancel();
+            controls.classList.remove('is-speaking');
+            status.innerText = "Pronto para auditar peças publicitárias.";
+        }
+
+        function addMessage(text, sender, labelName) {
+            const wrapper = document.createElement('div');
+            wrapper.className = `msg-wrapper ${sender}`;
+            const lbl = document.createElement('span');
+            lbl.className = 'label'; lbl.innerText = labelName;
+            const msg = document.createElement('div');
+            msg.className = 'msg'; msg.innerText = text;
+            wrapper.appendChild(lbl); wrapper.appendChild(msg);
+            chatContainer.appendChild(wrapper);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        async function uploadImage(input) {
+            if (!input.files || !input.files[0]) return;
+            status.innerText = "Auditando publicidade... ⚙️";
+            window.speechSynthesis.cancel();
+            controls.classList.remove('is-speaking');
+
+            const formData = new FormData();
+            formData.append('image', input.files[0]);
+
+            try {
+                const response = await fetch('/analyze-image', { method: 'POST', body: formData });
+                if (!response.ok) throw new Error();
+                const data = await response.json();
+
+                addMessage(`[Análise Prática]: ${input.files[0].name}`, 'user', 'Arquivo do Aluno');
+                addMessage(data.teacher_response_chat, 'teacher', 'Relatório de Conformidade com o CDC');
+                
+                status.innerText = "Análise Concluída.";
+                speakText(data.teacher_response_audio);
+            } catch (e) {
+                status.innerText = "Erro ao enviar ou processar a imagem.";
+            }
+            input.value = ''; 
+        }
+
+        function speakText(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = parseFloat(rateControl.value);
+            if (ptVoices.length > 0) utterance.voice = ptVoices[voiceSelect.value];
+            utterance.onstart = () => controls.classList.add('is-speaking');
+            utterance.onend = () => controls.classList.remove('is-speaking');
+            utterance.onerror = () => controls.classList.remove('is-speaking');
+            window.speechSynthesis.speak(utterance);
+        }
+    </script>
+</body>
+</html>
