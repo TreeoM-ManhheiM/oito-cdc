@@ -63,7 +63,6 @@
         .msg { padding: 16px; border-radius: 6px; font-size: 14px; line-height: 1.6; word-wrap: break-word; }
         .user .msg { background: #ebf5ff; color: #2b6cb0; border: 1px solid #bee3f8; font-weight: bold; }
         
-        /* Layout de Prancheta / Relatório Técnico */
         .teacher .msg { 
             background: #ffffff; color: #1a202c; border: 1px solid #b2c2d1;
             box-shadow: 0 2px 5px rgba(0,0,0,0.03); font-family: 'Times New Roman', Times, serif; font-size: 15px; white-space: pre-wrap;
@@ -73,19 +72,39 @@
 
         #controls {
             padding: 12px 20px 25px 20px; background-color: #ffffff; border-top: 2px solid #e1e8ed;
-            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
         }
 
-        .action-group { display: flex; align-items: center; justify-content: center; width: 100%; }
+        /* Grupo de botões lado a lado */
+        .action-group { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 25px; 
+            width: 100%; 
+        }
 
-        .upload-label {
-            width: 70px; height: 70px; border-radius: 50%; border: 2px solid #1e7e34;
-            background: #ffffff; color: #1e7e34; font-size: 28px; cursor: pointer;
+        /* Botão 1: Forçar Câmera Direta (Verde e Maior) */
+        .camera-label {
+            width: 75px; height: 75px; border-radius: 50%; border: 2px solid #28a745;
+            background: #28a745; color: white; font-size: 30px; cursor: pointer;
             display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 4px 10px rgba(30, 126, 52, 0.15);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
             transition: transform 0.1s;
         }
-        .upload-label:active { transform: scale(0.95); }
+        .camera-label:active { transform: scale(0.95); }
+
+        /* Botão 2: Anexar da Galeria (Azul e Discreto) */
+        .gallery-label {
+            width: 55px; height: 55px; border-radius: 50%; border: 2px solid #007bff;
+            background: #ffffff; color: #007bff; font-size: 22px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.15);
+            transition: transform 0.1s;
+        }
+        .gallery-label:active { transform: scale(0.95); }
+
+        .btn-hint { font-size: 11px; color: #718096; margin: 0; text-align: center; }
 
         #status { font-size: 13px; color: #4a5568; font-weight: bold; min-height: 18px; }
         .speaking-indicator { display: none; color: #2f855a; font-size: 12px; font-weight: bold; animation: pulse 1.5s infinite; }
@@ -117,22 +136,28 @@
             <span class="label">Manual do Aluno</span>
             <div class="msg">Bem-vindos à atividade prática de conformidade legal! 
 
-Instruções:
-1. Encontre um panfleto, anúncio impresso, placa de loja ou publicação de rede social de vendas.
-2. Clique no botão inferior da Câmera/Clipe (📎).
-3. Tire a foto ou anexe o arquivo.
+Instruções para a auditoria:
+• Clique no botão verde grande (📷) para **abrir a câmera do celular direto** e fotografar um cartaz ou produto.
+• Clique no botão azul menor (📎) para **anexar uma imagem ou print** que já está na sua galeria.
 
-O sistema processará a imagem em tempo real, calculando a porcentagem de conformidade com o CDC e gerando as recomendações de adequação comercial.</div>
+O sistema calculará a porcentagem de conformidade com o CDC automaticamente!</div>
         </div>
     </div>
 
     <div id="controls">
         <div id="status">Pronto para auditar peças publicitárias.</div>
+        
         <div class="action-group">
-            <label class="upload-label" for="imageInput">📷
-                <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="uploadImage(this)">
+            <label class="gallery-label" for="galleryInput" title="Anexar da Galeria">📎
+                <input type="file" id="galleryInput" accept="image/*" style="display: none;" onchange="uploadImage(this)">
+            </label>
+
+            <label class="camera-label" for="cameraInput" title="Tirar Foto Agora">📷
+                <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="uploadImage(this)">
             </label>
         </div>
+        <p class="btn-hint">Esquerda: Galeria | Direita: Câmera Direta</p>
+        
         <div class="speaking-indicator" id="speakingIndicator">🔊 Avaliação do Professor em reprodução...</div>
     </div>
 
